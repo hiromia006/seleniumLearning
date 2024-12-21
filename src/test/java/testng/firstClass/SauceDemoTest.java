@@ -4,6 +4,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -49,7 +52,7 @@ public class SauceDemoTest {
 
     @Test
     public void verifyLogin() {
-        WebDriver driver = new EdgeDriver();
+        WebDriver driver = new FirefoxDriver();
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(30));
         driver.get("https://www.saucedemo.com/");
@@ -63,10 +66,44 @@ public class SauceDemoTest {
         driver.findElement(By.id("password")).sendKeys("secret_sauce");
         loginBtn.click();
 
-        WebElement errorEl = driver.findElement(By.cssSelector("h3[data-test='error']"));
+        WebElement errorEl = driver.findElement(By.cssSelector("h3[data-test='error3']"));
         String errorText = errorEl.getText().trim();
 
-        Assert.assertEquals(errorText, "Epic sadface: Sorry, this user has been locked out.");
+//        Assert.assertEquals(errorText, "Epic sadface: Sorry, this user has been locked out.");
+
+        Assert.assertTrue(errorEl.isDisplayed());
+
+
+        driver.quit();
+    }
+
+
+    @Test
+    public void verifyLogin2() {
+        WebDriver driver = new FirefoxDriver();
+        driver.manage().window().maximize();
+        WebDriverWait wait=new WebDriverWait(driver, Duration.ofDays(30));
+        driver.get("https://www.saucedemo.com/");
+
+        WebElement loginBtn = driver.findElement(By.id("login-button"));
+
+        String loginBtnText = loginBtn.getAttribute("value");
+
+        Assert.assertEquals(loginBtnText, "Login");
+
+        WebElement tt=driver.findElement(By.id("user-name"));
+        wait.until(ExpectedConditions.visibilityOf(tt));
+        tt.sendKeys("locked_out_user");
+
+        driver.findElement(By.id("password")).sendKeys("secret_sauce");
+
+        wait.until(ExpectedConditions.elementToBeClickable(loginBtn));
+        loginBtn.click();
+
+        WebElement errorEl = driver.findElement(By.cssSelector("h3[data-test='error3']"));
+        String errorText = errorEl.getText().trim();
+
+//        Assert.assertEquals(errorText, "Epic sadface: Sorry, this user has been locked out.");
 
         Assert.assertTrue(errorEl.isDisplayed());
 

@@ -19,7 +19,7 @@ public class TestCases {
         System.out.println("Welcome Test Case");
     }
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void firstTestClass2() {
         String name = "hello";
         Assert.assertEquals(name, "hello1");
